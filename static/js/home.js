@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    console.log("I was correctly initied");
+    console.log("I was correctly inited");
     $("#search-submit").click(function(event) {
 
         event.preventDefault();
