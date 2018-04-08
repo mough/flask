@@ -14,6 +14,8 @@ recipe_data = "mysql+mysqlconnector://{username}:{password}@{hostname}/{database
     hostname="code2college.mysql.pythonanywhere-services.com",
     databasename="code2college$MyData")
 
+engine = create_engine(recipe_data)
+
 ### START Week12 Day 1 demo code ###
 # @app.route('/', methods=["GET"])
 # def index():
@@ -53,8 +55,6 @@ def get_recipes():
     url= request.args.get("url")
     # below is how we can print to our error log, will probably remove this once debugging is complete
     print("request recieved: name:{0} category: {1} url: {2}".format(name, category, url), file=sys.stderr)
-
-    engine = create_engine(recipe_data)
     sql_query_string, params = create_query(name, category, url)
     # below is a good debug line, but will probably remove once debugging is complete
     print("sql_query_string: {0} params: {1}".format(sql_query_string, params), file=sys.stderr)
@@ -68,24 +68,24 @@ def create_query(name, category, url):
     params = ()
     # we will set convention to always add a space at the BEGINNING of the sql chunk we're adding
     if name != "":
-        query_string += " WHERE recipe_name LIKE %s".format(name)
+        query_string += " WHERE recipe_name LIKE %s"
         need_or_operator = True
         params += ("%"+name+"%",)
     if category != "":
         if need_or_operator:
-            query_string += " OR category = %s".format(category)
+            query_string += " OR category = %s"
         else:
-            query_string += " WHERE category = %s".format(category)
+            query_string += " WHERE category = %s"
             need_or_operator = True
         params += (category,)
     if url != "":
         if need_or_operator:
-            query_string += " OR recipe_link LIKE %s".format(url)
+            query_string += " OR recipe_link LIKE %s"
         else:
-            query_string += " WHERE recipe_link LIKE %s".format(url)
+            query_string += " WHERE recipe_link LIKE %s"
         params += ("%"+url+"%",)
     # we're adding this limit to cover the scenario the user didn't supply any
     # paramters. We don't want to return ALL the rows in our DB!
-    query_string += " limit 1"
+    query_string += " limit 5"
 
     return query_string, params
